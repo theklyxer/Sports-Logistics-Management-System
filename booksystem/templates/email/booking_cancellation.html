@@ -1,0 +1,5 @@
+<h1>Booking Cancellation</h1>
+<p>Dear {{ booking.user.username }},</p>
+<p>Your booking for {{ booking.facility.name }} from {{ booking.start_datetime|date:"Y-m-d H:i" }} UTC to {{ booking.end_datetime|date:"Y-m-d H:i" }} UTC has been cancelled.</p>
+<p>If you have any questions, please contact support.</p>
+<p>Thank you for using our service.</p> 

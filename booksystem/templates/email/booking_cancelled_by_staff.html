@@ -1,0 +1,9 @@
+<p>Dear {{ booking.user.username }},</p>
+
+<p>Your booking for the facility <strong>{{ booking.facility.name }}</strong> from 
+<strong>{{ booking.start_datetime }}</strong> to <strong>{{ booking.end_datetime }}</strong> 
+has been <strong>cancelled</strong> due to a staff override.</p>
+
+<p><strong>Reason:</strong> {{ reason }}</p>
+
+<p>We apologize for the inconvenience.</p>

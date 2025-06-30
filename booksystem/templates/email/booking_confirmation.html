@@ -1,0 +1,10 @@
+<h1>Booking Confirmation</h1>
+<p>Dear {{ booking.user.username }},</p>
+<p>Your booking for {{ booking.facility.name }} has been successfully confirmed.</p>
+<p><strong>Details:</strong></p>
+<ul>
+    <li><strong>Facility:</strong> {{ booking.facility.name }}</li>
+    <li><strong>Start Time:</strong> {{ booking.start_datetime|date:"Y-m-d H:i" }} UTC</li>
+    <li><strong>End Time:</strong> {{ booking.end_datetime|date:"Y-m-d H:i" }} UTC</li>
+</ul>
+<p>Thank you for using our service.</p> 

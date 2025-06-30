@@ -1,0 +1,522 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff Dashboard</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet"/>
+  <!-- Custom CSS – add your styles here -->
+  <link href="{% static 'css/dashboard.css' %}" rel="stylesheet"/>
+</head>
+    <style>
+/* General body and typography */
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #343a40;
+    background-color: #f0f2f5; /* A subtle, modern background grey */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    color: #212529;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.navbar {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+
+/* Card Enhancements */
+.card {
+    border: none;
+    border-radius: 1rem; /* More rounded corners for a modern feel */
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    transition: all 0.3s ease-in-out;
+    background-color: #ffffff;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+/* Form Control Enhancements */
+.form-control,
+.form-select {
+    border-radius: 0.75rem;
+    border: 1px solid #ced4da;
+    padding: 0.85rem 1.2rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #6a0dad; /* A more distinct focus color */
+    box-shadow: 0 0 0 0.25rem rgba(106, 13, 173, 0.25);
+}
+
+/* Button Enhancements */
+.btn {
+    border-radius: 0.75rem;
+    padding: 0.85rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #6a0dad; /* Primary purple */
+    border-color: #6a0dad;
+}
+
+.btn-primary:hover {
+    background-color: #5a0ca0;
+    border-color: #5a0ca0;
+}
+
+.btn-success {
+    background-color: #28a745; /* Standard green */
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-danger {
+    background-color: #dc3545; /* Standard red */
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-color: #fff;
+}
+
+/* FullCalendar Specific Styling */
+.fc .fc-toolbar-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #495057;
+}
+
+.fc .fc-button {
+    border-radius: 0.5rem;
+    padding: 0.6rem 1rem;
+    font-weight: 500;
+    background-color: #e9ecef; /* Light grey for FC buttons */
+    border: 1px solid #dee2e6;
+    color: #495057;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+    background-color: #6a0dad;
+    border-color: #6a0dad;
+    color: #fff;
+}
+
+.fc .fc-button-primary:not(:disabled):active:focus,
+.fc .fc-button-primary:not(:disabled).fc-button-active:focus {
+    box-shadow: 0 0 0 0.25rem rgba(106, 13, 173, 0.25);
+}
+
+.fc-daygrid-event {
+    border-radius: 0.4rem;
+    font-weight: 500;
+    padding: 0.2rem 0.4rem;
+    background-color: #a770e0; /* Default event color */
+    border: 1px solid #9458d0;
+}
+
+.fc-timegrid-event {
+    border-radius: 0.4rem;
+    font-weight: 500;
+    padding: 0.2rem 0.4rem;
+    background-color: #a770e0;
+    border: 1px solid #9458d0;
+}
+
+/* Custom colors for blocked/booked events */
+.fc-event-booked {
+    background-color: #6c757d; /* Grey for booked/unavailable slots */
+    border-color: #5a6268;
+}
+
+.fc-event-available {
+    background-color: #28a745; /* Green for available slots */
+    border-color: #218838;
+}
+
+.fc-event-blocked {
+    background-color: #dc3545; /* Red for blocked slots (staff) */
+    border-color: #c82333;
+}
+
+/* Calendar container specific styling */
+#calendar {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+}
+
+/* Style for the event summary in transparent calendar */
+.event-summary {
+    background-color: var(--summary-color, #6c757d);
+    color: white;
+    border-radius: 8px;
+    padding: 3px 8px;
+    font-size: 0.8em;
+    font-weight: 500;
+    margin-top: 4px;
+    display: inline-block;
+}
+
+.fc-daygrid-day-frame {
+    text-align: center;
+}
+.fc-daygrid-day-top {
+    text-align: left;
+}
+/* Custom selection and hover color for FullCalendar */
+.fc-daygrid-day:hover .fc-daygrid-day-frame {
+    background-color: rgba(106, 13, 173, 0.15) !important; /* light purple on hover */
+}
+.fc .fc-daygrid-day.fc-day-selected .fc-daygrid-day-frame {
+    background-color: #d1b3e6 !important; /* Opaque light purple for selection */
+}
+
+/* Adjustments for block form on staff dashboard */
+#blockForm .form-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.text-primary {
+    color: #6a0dad !important;
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-secondary {
+    color: #6c757d !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+
+    .btn-lg {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .form-control-lg,
+    .form-select-lg {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .card-body {
+        padding: 1.5rem !important;
+    }
+}
+    </style>
+<body class="bg-light">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid px-4 py-2">
+      <span class="navbar-brand fs-4">Staff Dashboard</span>
+      <div class="d-flex ms-auto">
+        <a href="/profile/staff/" class="btn btn-outline-light me-2">Profile</a>
+        <form method="POST" action="/api/logout-cookie/">{% csrf_token %}
+          <button class="btn btn-outline-light">Logout</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-5">
+    <div class="row g-4">
+      <!-- Left Panel -->
+      <div class="col-lg-4">
+        <!-- Add Facility -->
+        <div class="card p-4">
+          <h5 class="text-primary">Add New Sport Facility</h5>
+          <form id="addFacilityForm" class="d-flex flex-column gap-3">
+            <input id="facilityName" class="form-control" placeholder="Facility Name" required/>
+            <button class="btn btn-success">Add Facility</button>
+          </form>
+        </div>
+        <!-- Facility Selector -->
+        <div class="card p-4">
+          <h5 class="text-primary">Select Facility to Manage</h5>
+          <select id="facilitySelect" class="form-select">
+            <option value="">-- Select --</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Right Panel -->
+      <div class="col-lg-8">
+        <!-- Booking Calendar -->
+        <div class="card p-4">
+          <h4 class="text-primary mb-3">Booking Calendar</h4>
+          <div id="calendar"></div>
+        </div>
+
+        <!-- Block Slot Form (hidden until a date is selected) -->
+        <div id="blockForm" class="card p-4" style="display:none;">
+          <h5 class="text-primary mb-3">
+            Block Time Slot on <span id="blockDateLabel"></span>
+          </h5>
+          <div class="row g-3 align-items-end">
+            <div class="col-sm-4">
+              <label class="form-label">Start Hour</label>
+              <select id="blockStartHour" class="form-select"></select>
+            </div>
+            <div class="col-sm-4">
+              <label class="form-label">End Hour</label>
+              <select id="blockEndHour" class="form-select"></select>
+            </div>
+            <div class="col-sm-4">
+              <label class="form-label">Reason (optional)</label>
+              <input id="blockReason" class="form-control" placeholder="Reason"/>
+            </div>
+            <div class="col-12">
+              <button onclick="blockSlot()" class="btn btn-danger w-100">Block Slot</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transparent Calendar -->
+        <div class="card p-4">
+          <h4 class="text-primary mb-3">Transparent Calendar (All Facilities)</h4>
+          <div id="allFacilitiesCalendar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Details Modal -->
+  <div class="modal fade" id="bookingDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">
+            Bookings on <span id="modalDate"></span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap & FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+  <script>
+    let selectedFacility, calendar, allFacilitiesCalendar;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadFacilities();
+      populateTimeSelectors();
+      initTransparentCalendar();
+    });
+
+    async function loadFacilities() {
+      const res = await fetch('/facilities/', { credentials: 'include' });
+      const data = await res.json();
+      const sel = document.getElementById('facilitySelect');
+      sel.innerHTML = '<option value="">-- Select --</option>';
+      data.forEach(f => sel.add(new Option(f.name, f.id)));
+      sel.onchange = () => loadBookingCalendar(sel.value);
+    }
+
+    document.getElementById('addFacilityForm').onsubmit = async e => {
+      e.preventDefault();
+      const name = document.getElementById('facilityName').value.trim();
+      if (!name) return;
+      const res = await fetch('/facilities/create/', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
+        body: JSON.stringify({ name })
+      });
+      const msg = await res.json();
+      alert(msg.message || msg.error);
+      if (res.ok) loadFacilities();
+    };
+
+    function populateTimeSelectors() {
+      ['blockStartHour','blockEndHour'].forEach(id => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = '';
+        for (let h = 5; h <= 23; h++) sel.add(new Option(`${h}:00`, h));
+      });
+    }
+
+    async function loadBookingCalendar(facId) {
+      selectedFacility = facId;
+      if (calendar) calendar.destroy();
+      const data = await (await fetch(`/calendar/${facId}/`, { credentials: 'include' })).json();
+      calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+        timeZone: 'UTC',
+        initialView: 'dayGridMonth',
+        selectable: true,
+        events: data.map(b => ({
+          title: b.reason || 'Blocked',
+          start: b.start_datetime,
+          end: b.end_datetime,
+          color: '#dc3545'
+        })),
+        select: info => showBlockForm(info),
+        eventClick: info =>
+          alert(`Blocked: ${info.event.title}\n${info.event.start.toUTCString()}–${info.event.end.toUTCString()}`)
+      });
+      calendar.render();
+    }
+
+    function showBlockForm(info) {
+      const d = info.start.toISOString().split('T')[0];
+      document.getElementById('blockDateLabel').textContent = d;
+      document.getElementById('blockStartHour').value = info.start.getUTCHours();
+      document.getElementById('blockEndHour').value = info.end.getUTCHours();
+      document.getElementById('blockForm').style.display = 'block';
+    }
+
+    async function blockSlot() {
+      const s = +document.getElementById('blockStartHour').value;
+      const e = +document.getElementById('blockEndHour').value;
+      const r = document.getElementById('blockReason').value.trim();
+      const date = document.getElementById('blockDateLabel').textContent;
+      if (s >= e) return alert('Invalid time.');
+      const [y, m, d] = date.split('-').map(Number);
+      const start = new Date(Date.UTC(y, m - 1, d, s));
+      const end = new Date(Date.UTC(y, m - 1, d, e));
+      const res = await fetch('/block/', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
+        body: JSON.stringify({
+          facility_id: selectedFacility,
+          start_datetime: start.toISOString(),
+          end_datetime: end.toISOString(),
+          reason: r
+        })
+      });
+      const msg = await res.json();
+      alert(msg.message || msg.error);
+      if (res.ok) {
+        loadBookingCalendar(selectedFacility);
+        initTransparentCalendar();
+        document.getElementById('blockForm').style.display = 'none';
+      }
+    }
+
+    async function initTransparentCalendar() {
+      const now = new Date(), later = new Date(now);
+      later.setMonth(now.getMonth() + 3);
+      const res = await fetch(
+        `/api/all-calendar/?start_date=${now.toISOString().split('T')[0]}&end_date=${later.toISOString().split('T')[0]}`,
+        { credentials: 'include' }
+      );
+      const data = await res.json();
+      const summaryByDate = {};
+      data.forEach(day => summaryByDate[day.date] = day);
+
+      if (allFacilitiesCalendar) allFacilitiesCalendar.destroy();
+      allFacilitiesCalendar = new FullCalendar.Calendar(document.getElementById('allFacilitiesCalendar'), {
+        timeZone: 'UTC',
+        initialView: 'dayGridMonth',
+        selectable: true,
+        dayCellDidMount(arg) {
+          const d = arg.date.toISOString().split('T')[0];
+          if (summaryByDate[d]) {
+            const summary = summaryByDate[d];
+            const div = document.createElement('div');
+            div.textContent = summary.title;
+            div.className = 'event-summary';
+            div.style.setProperty('--summary-color', summary.color);
+            arg.el.querySelector('.fc-daygrid-day-frame')?.appendChild(div);
+            arg.el.style.backgroundColor = summary.color + '22';
+          }
+        },
+        dateClick(info) {
+          const sum = summaryByDate[info.dateStr];
+          showEventsModal(info.dateStr, sum ? sum.events : []);
+        }
+      });
+      allFacilitiesCalendar.render();
+    }
+
+    function showEventsModal(date, events) {
+      document.getElementById('modalDate').textContent = date;
+      const body = document.getElementById('modalBody');
+      body.innerHTML = '';
+      if (!events || events.length === 0) {
+        body.innerHTML = '<p>No bookings on this day.</p>';
+      } else {
+        events.forEach(evt => {
+          const card = document.createElement('div');
+          card.className = 'card mb-2';
+          card.innerHTML = `
+            <div class="card-body">
+              <h5>${evt.title || evt.name || 'Booked'}</h5>
+              <p><strong>Facility:</strong> ${evt.facility_name || 'N/A'}</p>
+              <p><strong>Time:</strong> ${evt.start?.slice(11,16)}–${evt.end?.slice(11,16)} UTC</p>
+              <p><strong>User:</strong> ${evt.user_username || 'System/Staff'}</p>
+            </div>`;
+          body.appendChild(card);
+        });
+      }
+      new bootstrap.Modal(document.getElementById('bookingDetailModal')).show();
+    }
+
+    function getCookie(name) {
+      return document.cookie.split('; ').find(c => c.startsWith(name + '='))?.split('=')[1] || null;
+    }
+  </script>
+</body>
+</html>
